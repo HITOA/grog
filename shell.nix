@@ -8,12 +8,27 @@ pkgs.mkShell {
 
     alsa-lib
     libGL
+    dbus
+    SDL2
+    xorg.libX11
+    xorg.libXrandr
+    xorg.libXinerama
+    xorg.libXcursor
+    xorg.libXi
+    xorg.libXScrnSaver
+    xssstate
+    libxkbcommon
     libllvm
   ];
 
   NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
     stdenv.cc.cc
     alsa-lib
+    xorg.libXrandr
+    xorg.libXinerama
+    xorg.libXcursor
+    xorg.libXi
+    libxkbcommon
     libGL
   ];
 

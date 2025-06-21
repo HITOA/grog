@@ -12,11 +12,28 @@ endif()
 
 add_subdirectory(3rdParty/DPF)
 
-dpf_add_plugin(Grog
+dpf_add_plugin(grog
     TARGETS clap lv2 vst2 vst3 jack
     FILES_DSP
         src/GrogPlugin.cpp
     FILES_UI
-        src/GrogUI.cpp)
+        src/ImguiUI.cpp
+        src/GrogUI.cpp
+    UI_TYPE opengl)
 
-target_include_directories(Grog PUBLIC src)
+target_include_directories(grog PUBLIC src)
+
+# IMGUI
+
+add_library(grog-imgui STATIC 
+    3rdParty/imgui/imgui_demo.cpp
+    3rdParty/imgui/imgui_draw.cpp
+    3rdParty/imgui/imgui_tables.cpp
+    3rdParty/imgui/imgui_widgets.cpp
+    3rdParty/imgui/imgui.cpp
+    3rdParty/imgui/backends/imgui_impl_opengl2.cpp
+    3rdParty/imgui/backends/imgui_impl_opengl3.cpp)
+
+target_include_directories(grog-imgui PUBLIC 3rdParty/imgui)
+
+target_link_libraries(grog-ui PRIVATE grog-imgui)

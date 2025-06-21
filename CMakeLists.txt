@@ -12,7 +12,7 @@ endif()
 
 add_subdirectory(3rdParty/DPF)
 
-dpf_add_plugin(grog
+dpf_add_plugin(grog-synth
     TARGETS clap lv2 vst2 vst3 jack
     FILES_DSP
         src/GrogPlugin.cpp
@@ -21,7 +21,19 @@ dpf_add_plugin(grog
         src/GrogUI.cpp
     UI_TYPE opengl)
 
-target_include_directories(grog PUBLIC src)
+dpf_add_plugin(grog-effect
+    TARGETS clap lv2 vst2 vst3 jack
+    FILES_DSP
+        src/GrogPlugin.cpp
+    FILES_UI
+        src/ImguiUI.cpp
+        src/GrogUI.cpp
+    UI_TYPE opengl)
+
+target_include_directories(grog-synth PUBLIC src)
+target_include_directories(grog-effect PUBLIC src)
+
+target_compile_definitions(grog-synth PUBLIC GROG_IS_SYNTH)
 
 # IMGUI
 
@@ -36,4 +48,5 @@ add_library(grog-imgui STATIC
 
 target_include_directories(grog-imgui PUBLIC 3rdParty/imgui)
 
-target_link_libraries(grog-ui PRIVATE grog-imgui)
+target_link_libraries(grog-synth-ui PRIVATE grog-imgui)
+target_link_libraries(grog-effect-ui PRIVATE grog-imgui)

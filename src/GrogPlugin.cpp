@@ -44,14 +44,22 @@ void GrogPlugin::setParameterValue(uint32_t index, float value) {
 
 }
 
+#ifdef GROG_IS_SYNTH
 void GrogPlugin::run(const float** inputs, float** outputs, uint32_t frames,
                     const MidiEvent* midiEvents, uint32_t midiEventCount) {
-    
     for (uint32_t i = 0; i < frames; ++i) {
         outputs[0][i] = 0;
         outputs[1][i] = 0;
     }
 }
+#else
+void GrogPlugin::run(const float** inputs, float** outputs, uint32_t frames) {
+    for (uint32_t i = 0; i < frames; ++i) {
+        outputs[0][i] = 0;
+        outputs[1][i] = 0;
+    }
+}
+#endif
 
 START_NAMESPACE_DISTRHO
 

@@ -28,8 +28,12 @@ protected:
 
     void setParameterValue(uint32_t index, float value) override;
 
+    #ifdef GROG_IS_SYNTH
     void run(const float** inputs, float** outputs, uint32_t frames,
                      const MidiEvent* midiEvents, uint32_t midiEventCount) override;
+    #else
+    void run(const float** inputs, float** outputs, uint32_t frames) override;
+    #endif
 
 
 private:

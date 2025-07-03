@@ -4,3 +4,6 @@
 [submodule "3rdParty/imgui"]
 	path = 3rdParty/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "3rdParty/vcl-graph"]
+	path = 3rdParty/vcl-graph
+	url = https://github.com/HITOA/vcl-graph

@@ -11,6 +11,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 add_subdirectory(3rdParty/DPF)
+add_subdirectory(3rdParty/vcl-graph)
 
 dpf_add_plugin(grog-synth
     TARGETS clap lv2 vst2 vst3 jack
@@ -48,5 +49,5 @@ add_library(grog-imgui STATIC
 
 target_include_directories(grog-imgui PUBLIC 3rdParty/imgui)
 
-target_link_libraries(grog-synth-ui PRIVATE grog-imgui)
-target_link_libraries(grog-effect-ui PRIVATE grog-imgui)
+target_link_libraries(grog-synth-ui PRIVATE grog-imgui vclg)
+target_link_libraries(grog-effect-ui PRIVATE grog-imgui vclg)

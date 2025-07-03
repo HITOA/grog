@@ -165,7 +165,6 @@ ImguiUI::ImguiUI(uint width, uint height, bool automaticallyScaleAndSetAsMinimum
     ImGuiStyle& style = ImGui::GetStyle();
     style.ScaleAllSizes((float)getScaleFactor());
 
-
     #if defined(DGL_USE_GLES2) || defined(DGL_USE_GLES3) || defined(DGL_USE_OPENGL3)
     ImGui_ImplOpenGL3_Init();
     #else

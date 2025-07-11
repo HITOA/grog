@@ -142,7 +142,7 @@ static ImGuiKey GetImguiKey(uint key) {
     }
 }
 
-ImguiUI::ImguiUI(uint width, uint height, bool automaticallyScaleAndSetAsMinimumSize) : 
+Grog::ImguiUI::ImguiUI(uint width, uint height, bool automaticallyScaleAndSetAsMinimumSize) : 
     DISTRHO::UI(width, height, automaticallyScaleAndSetAsMinimumSize) {
     
     IMGUI_CHECKVERSION();
@@ -172,7 +172,7 @@ ImguiUI::ImguiUI(uint width, uint height, bool automaticallyScaleAndSetAsMinimum
     #endif
 }
 
-ImguiUI::~ImguiUI() {
+Grog::ImguiUI::~ImguiUI() {
     ImGui::SetCurrentContext(context);
     #if defined(DGL_USE_GLES2) || defined(DGL_USE_GLES3) || defined(DGL_USE_OPENGL3)
     ImGui_ImplOpenGL3_Shutdown();
@@ -183,7 +183,7 @@ ImguiUI::~ImguiUI() {
 }
 
 
-void ImguiUI::onDisplay() {
+void Grog::ImguiUI::onDisplay() {
     const double time = getApp().getTime();
     const double delta = time - lastFrameTime;
     lastFrameTime = time;
@@ -211,11 +211,11 @@ void ImguiUI::onDisplay() {
     }
 }
 
-void ImguiUI::uiIdle() {
+void Grog::ImguiUI::uiIdle() {
     repaint();
 }
 
-bool ImguiUI::onKeyboard(const KeyboardEvent& event) {
+bool Grog::ImguiUI::onKeyboard(const KeyboardEvent& event) {
     if (UI::onKeyboard(event))
         return true;
 
@@ -228,7 +228,7 @@ bool ImguiUI::onKeyboard(const KeyboardEvent& event) {
     return io.WantCaptureKeyboard;
 }
 
-bool ImguiUI::onCharacterInput(const CharacterInputEvent& event) {
+bool Grog::ImguiUI::onCharacterInput(const CharacterInputEvent& event) {
     if (UI::onCharacterInput(event))
         return true;
 
@@ -239,7 +239,7 @@ bool ImguiUI::onCharacterInput(const CharacterInputEvent& event) {
     return io.WantCaptureKeyboard;
 }
 
-bool ImguiUI::onMouse(const MouseEvent& event) {
+bool Grog::ImguiUI::onMouse(const MouseEvent& event) {
     if (UI::onMouse(event))
         return true;
 
@@ -250,7 +250,7 @@ bool ImguiUI::onMouse(const MouseEvent& event) {
     return io.WantCaptureMouse;
 }
 
-bool ImguiUI::onMotion(const MotionEvent& event) {
+bool Grog::ImguiUI::onMotion(const MotionEvent& event) {
     if (UI::onMotion(event))
         return true;
 
@@ -261,7 +261,7 @@ bool ImguiUI::onMotion(const MotionEvent& event) {
     return false;
 }
 
-bool ImguiUI::onScroll(const ScrollEvent& event) {
+bool Grog::ImguiUI::onScroll(const ScrollEvent& event) {
     if (UI::onScroll(event))
         return true;
 
@@ -275,7 +275,7 @@ bool ImguiUI::onScroll(const ScrollEvent& event) {
     return io.WantCaptureMouse;
 }
 
-void ImguiUI::onResize(const ResizeEvent& event) {
+void Grog::ImguiUI::onResize(const ResizeEvent& event) {
     UI::onResize(event);
 
     ImGuiIO& io = ImGui::GetIO();

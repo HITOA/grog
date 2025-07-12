@@ -17,7 +17,8 @@ dpf_add_plugin(grog-synth
     TARGETS clap lv2 vst2 vst3 jack
     FILES_COMMON
         src/Common/AtomicSharedPtr.hpp
-        src/Common/AtomicSharedPtr.cpp
+        src/Common/Filesystem.cpp
+        src/Common/Filesystem.hpp
     FILES_DSP
         src/DSP/GrogPlugin.cpp
     FILES_UI
@@ -29,7 +30,8 @@ dpf_add_plugin(grog-effect
     TARGETS clap lv2 vst2 vst3 jack
     FILES_COMMON
         src/Common/AtomicSharedPtr.hpp
-        src/Common/AtomicSharedPtr.cpp
+        src/Common/Filesystem.cpp
+        src/Common/Filesystem.hpp
     FILES_DSP
         src/DSP/GrogPlugin.cpp
     FILES_UI

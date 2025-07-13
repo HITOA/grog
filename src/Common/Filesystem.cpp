@@ -34,21 +34,6 @@ std::filesystem::path Grog::Filesystem::GetUserDirectoryPath() {
 #endif
 }
 
-std::filesystem::path Grog::Filesystem::GetUserDocumentsDirectoryPath() {
-#if defined(WIN32) || defined(_WIN32)
-    std::filesystem::path path;
-    PWSTR ppszPath = nullptr;
-    if (SUCCEEDED(SHGetKnownFolderPath(&FOLDERID_Documents, 0, NULL, &ppszPath)))
-        path = std::filesystem::path{ ppszPath };
-    CoTaskMemFree(ppszPath);
-    return path;
-#elif __APPLE__
-    //TODO: implementation
-#elif __linux__ || __unix__
-    return GetUserDirectoryPath() / "Documents";
-#endif
-}
-
 std::filesystem::path Grog::Filesystem::GetUserConfigDirectoryPath() {
 #if defined(WIN32) || defined(_WIN32)
     std::filesystem::path path;

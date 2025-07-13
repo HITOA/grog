@@ -11,11 +11,6 @@ namespace Grog::Filesystem {
     std::filesystem::path GetUserDirectoryPath();
 
     /**
-     * @brief Get a suitable directory for user documents.
-     */
-    std::filesystem::path GetUserDocumentsDirectoryPath();
-
-    /**
      * @brief Get a suitable directory for user wide config.
      */
     std::filesystem::path GetUserConfigDirectoryPath();

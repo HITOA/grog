@@ -12,8 +12,8 @@ namespace Grog {
         ~ImguiUI() override;
 
     protected:
-        virtual void onImguiDisplay() = 0;
-
+        virtual void OnImguiDisplay() = 0;
+        
         void onDisplay() override;
         void uiIdle() override;
 

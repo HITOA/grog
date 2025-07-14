@@ -50,16 +50,6 @@ void Grog::GrogPlugin::run(const float** inputs, float** outputs, uint32_t frame
         outputs[0][i] = 0;
         outputs[1][i] = 0;
     }
-
-    VCLG::Graph::ExecutionContextHandle context = graph->GetExecutionContext();
-
-    if (!context)
-        return;
-
-    void* userData = context->GetUserData();
-    if (!userData)
-        return;
-    
     
 }
 

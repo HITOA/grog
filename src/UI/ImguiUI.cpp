@@ -198,7 +198,7 @@ void Grog::ImguiUI::onDisplay() {
     #endif
 
     ImGui::NewFrame();
-    onImguiDisplay();
+    OnImguiDisplay();
     ImGui::Render();
 
     if (ImDrawData* const data = ImGui::GetDrawData())

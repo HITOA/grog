@@ -13,10 +13,36 @@ void Grog::GrogUI::parameterChanged(uint32_t index, float value) {
 
 }
 
-void Grog::GrogUI::onImguiDisplay() {
+void Grog::GrogUI::OnImguiDisplay() {
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
 
-    static bool open = true;
-    ImGui::ShowDemoWindow(&open);
+    ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);
+
+    ImGui::Begin("Grog", nullptr, 
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | 
+        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus);
+
+    DrawMainMenuBar();
+
+    ImGui::End();
+}
+
+void Grog::GrogUI::DrawMainMenuBar() {
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Window")) {
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
 }
 
 START_NAMESPACE_DISTRHO

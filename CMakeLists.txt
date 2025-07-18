@@ -10,10 +10,11 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_package(CURL REQUIRED HTTPS)
+find_package(CURL REQUIRED COMPONENTS HTTPS HTTP HTTP2)
 
 add_subdirectory(3rdParty/DPF)
 add_subdirectory(3rdParty/json)
+add_subdirectory(3rdParty/miniz)
 add_subdirectory(3rdParty/vcl-graph)
 
 dpf_add_plugin(grog-synth
@@ -94,8 +95,8 @@ add_library(grog-imgui STATIC
 
 target_include_directories(grog-imgui PUBLIC 3rdParty/imgui)
 
-target_link_libraries(grog-synth-ui PRIVATE grog-imgui vclg nlohmann_json CURL::libcurl)
-target_link_libraries(grog-effect-ui PRIVATE grog-imgui vclg nlohmann_json CURL::libcurl)
+target_link_libraries(grog-synth-ui PRIVATE grog-imgui vclg nlohmann_json ${CURL_LIBRARIES} miniz)
+target_link_libraries(grog-effect-ui PRIVATE grog-imgui vclg nlohmann_json ${CURL_LIBRARIES} miniz)
 
 target_link_libraries(grog-synth-dsp PRIVATE vclg)
 target_link_libraries(grog-effect-dsp PRIVATE vclg)

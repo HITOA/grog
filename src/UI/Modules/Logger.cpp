@@ -15,7 +15,6 @@ void Grog::Logger::Terminate() {
 
 bool Grog::Logger::OnEvent(EventHandle& handle) {
     if (auto event = handle.Get<LogMessageEvent>()) {
-        std::cout << event->message.message << std::endl;
         return true;
     }
     return false;

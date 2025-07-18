@@ -17,7 +17,7 @@ namespace Grog {
             bool autoLoadAfterUpdate;
         };
         struct UpdateEvent {
-            std::string resourceURL;
+            std::string resource;
             bool autoLoadAfterUpdate;
         };
         struct LoadResourcesEvent {};
@@ -30,11 +30,11 @@ namespace Grog {
 
     private:
         void CheckUpdate(std::string resourceURL, bool autoLoadAfterUpdate);
+        void Update(std::string resource, bool autoLoadAfterUpdate);
+
+        void ShowError(const std::string& name, const std::string& msg);
 
     private:
-        std::filesystem::path resourceDirectoryPath{};
-        std::filesystem::path userResourceDirectoryPath{};
-
         std::jthread runningThread{};
     };
 

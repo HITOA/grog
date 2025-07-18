@@ -1,11 +1,11 @@
 #include "Application.hpp"
 
 #include <imgui.h>
+#include <curl/curl.h>
 
 #include <DSP/GrogPlugin.hpp>
 
 #include <UI/Filesystem.hpp>
-
 #include <UI/Modules/AsyncResourceManager.hpp>
 #include <UI/Modules/Logger.hpp>
 #include <UI/Modules/ModalWindowManager.hpp>
@@ -13,11 +13,13 @@
 
 Grog::Application::Application() : ImguiUI{ DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT } {
     setGeometryConstraints(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT, true);
+    curl_global_init(CURL_GLOBAL_ALL);
 }
 
 Grog::Application::~Application() {
     for (auto& module : modules)
         module->Terminate();
+    curl_global_cleanup();
 }
 
 void Grog::Application::Initialize() {

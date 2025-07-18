@@ -5,6 +5,7 @@
 
 namespace Grog {
 
+    // I should probably make this thread safe at some point
     class Config {
     public:
         Config();

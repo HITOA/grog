@@ -10,3 +10,9 @@
 [submodule "3rdParty/json"]
 	path = 3rdParty/json
 	url = https://github.com/nlohmann/json
+[submodule "3rdParty/curl"]
+	path = 3rdParty/curl
+	url = https://github.com/curl/curl
+[submodule "3rdParty/miniz"]
+	path = 3rdParty/miniz
+	url = https://github.com/richgel999/miniz.git

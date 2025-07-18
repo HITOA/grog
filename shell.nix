@@ -18,6 +18,7 @@ pkgs.mkShell {
     xorg.libXScrnSaver
     xssstate
     libxkbcommon
+    curl
     libllvm
   ];
 

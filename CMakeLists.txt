@@ -12,7 +12,19 @@ endif()
 
 find_package(CURL REQUIRED COMPONENTS HTTPS HTTP HTTP2)
 
+add_library(imgui STATIC 
+    3rdParty/imgui/imgui_demo.cpp
+    3rdParty/imgui/imgui_draw.cpp
+    3rdParty/imgui/imgui_tables.cpp
+    3rdParty/imgui/imgui_widgets.cpp
+    3rdParty/imgui/imgui.cpp
+    3rdParty/imgui/backends/imgui_impl_opengl2.cpp
+    3rdParty/imgui/backends/imgui_impl_opengl3.cpp)
+target_include_directories(imgui PUBLIC 3rdParty/imgui)
+add_library(grog-imgui ALIAS imgui)
+
 add_subdirectory(3rdParty/DPF)
+add_subdirectory(3rdParty/imgui-node-editor)
 add_subdirectory(3rdParty/json)
 add_subdirectory(3rdParty/miniz)
 add_subdirectory(3rdParty/vcl-graph)
@@ -86,21 +98,8 @@ target_include_directories(grog-effect PUBLIC src)
 
 target_compile_definitions(grog-synth PUBLIC GROG_IS_SYNTH)
 
-# IMGUI
-
-add_library(grog-imgui STATIC 
-    3rdParty/imgui/imgui_demo.cpp
-    3rdParty/imgui/imgui_draw.cpp
-    3rdParty/imgui/imgui_tables.cpp
-    3rdParty/imgui/imgui_widgets.cpp
-    3rdParty/imgui/imgui.cpp
-    3rdParty/imgui/backends/imgui_impl_opengl2.cpp
-    3rdParty/imgui/backends/imgui_impl_opengl3.cpp)
-
-target_include_directories(grog-imgui PUBLIC 3rdParty/imgui)
-
-target_link_libraries(grog-synth-ui PRIVATE grog-imgui vclg nlohmann_json ${CURL_LIBRARIES} miniz)
-target_link_libraries(grog-effect-ui PRIVATE grog-imgui vclg nlohmann_json ${CURL_LIBRARIES} miniz)
+target_link_libraries(grog-synth-ui PRIVATE grog-imgui vclg nlohmann_json ${CURL_LIBRARIES} miniz imgui_node_editor)
+target_link_libraries(grog-effect-ui PRIVATE grog-imgui vclg nlohmann_json ${CURL_LIBRARIES} miniz imgui_node_editor)
 
 target_link_libraries(grog-synth-dsp PRIVATE vclg)
 target_link_libraries(grog-effect-dsp PRIVATE vclg)

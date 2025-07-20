@@ -29,15 +29,13 @@ add_subdirectory(3rdParty/json)
 add_subdirectory(3rdParty/miniz)
 add_subdirectory(3rdParty/vcl-graph)
 
-dpf_add_plugin(grog-synth
-    TARGETS clap lv2 vst2 vst3 jack
-    FILES_COMMON
+set(grog-common-src
         src/Common/AtomicSharedPtr.cpp
-        src/Common/AtomicSharedPtr.hpp
-    FILES_DSP
+        src/Common/AtomicSharedPtr.hpp)
+set(grog-dsp-src
         src/DSP/Processor.cpp
-        src/DSP/Processor.hpp
-    FILES_UI
+        src/DSP/Processor.hpp)
+set(grog-ui-src
         src/UI/Application.cpp
         src/UI/Application.hpp
         src/UI/Config.cpp
@@ -58,39 +56,20 @@ dpf_add_plugin(grog-synth
         src/UI/Modules/Logger.hpp
         src/UI/Modules/Logger.cpp
         src/UI/Modules/ModalWindowManager.hpp
-        src/UI/Modules/ModalWindowManager.cpp
+        src/UI/Modules/ModalWindowManager.cpp)
+
+dpf_add_plugin(grog-synth
+    TARGETS clap lv2 vst2 vst3 jack
+    FILES_COMMON ${grog-common-src}
+    FILES_DSP ${grog-dsp-src}
+    FILES_UI ${grog-ui-src}
     UI_TYPE opengl)
 
 dpf_add_plugin(grog-effect
     TARGETS clap lv2 vst2 vst3 jack
-    FILES_COMMON
-        src/Common/AtomicSharedPtr.cpp
-        src/Common/AtomicSharedPtr.hpp
-    FILES_DSP
-        src/DSP/Processor.cpp
-        src/DSP/Processor.hpp
-    FILES_UI
-        src/UI/Application.cpp
-        src/UI/Application.hpp
-        src/UI/Config.cpp
-        src/UI/Config.hpp
-        src/UI/Event.cpp
-        src/UI/Event.hpp
-        src/UI/Filesystem.cpp
-        src/UI/Filesystem.hpp
-        src/UI/ImguiUI.cpp
-        src/UI/ImguiUI.hpp
-        src/UI/Module.cpp
-        src/UI/Module.hpp
-
-        src/UI/Modules/AsyncResourceManager.hpp
-        src/UI/Modules/AsyncResourceManager.cpp
-        src/UI/Modules/GraphEditor.hpp
-        src/UI/Modules/GraphEditor.cpp
-        src/UI/Modules/Logger.hpp
-        src/UI/Modules/Logger.cpp
-        src/UI/Modules/ModalWindowManager.hpp
-        src/UI/Modules/ModalWindowManager.cpp
+    FILES_COMMON ${grog-common-src}
+    FILES_DSP ${grog-dsp-src}
+    FILES_UI ${grog-ui-src}
     UI_TYPE opengl)
 
 target_include_directories(grog-synth PUBLIC src)

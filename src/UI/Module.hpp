@@ -13,6 +13,7 @@ namespace Grog {
         virtual void Terminate();
 
         virtual void Draw();
+        virtual void DrawWidget();
 
     protected:
         Application* GetApplication();

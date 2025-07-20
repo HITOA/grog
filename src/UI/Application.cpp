@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include <curl/curl.h>
 
-#include <DSP/GrogPlugin.hpp>
+#include <DSP/Processor.hpp>
 
 #include <UI/Filesystem.hpp>
 #include <UI/Modules/AsyncResourceManager.hpp>
@@ -11,10 +11,14 @@
 #include <UI/Modules/Logger.hpp>
 #include <UI/Modules/ModalWindowManager.hpp>
 
+#include <iostream>
+
 
 Grog::Application::Application() : ImguiUI{ DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT } {
     setGeometryConstraints(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT, true);
     curl_global_init(CURL_GLOBAL_ALL);
+    Processor* plugin = (Processor*)getPluginInstancePointer();
+    graph = plugin->GetGraph();
 }
 
 Grog::Application::~Application() {
@@ -48,6 +52,10 @@ Grog::EventBus& Grog::Application::GetEventBus() {
     return eventBus;
 }
 
+VCLG::Graph& Grog::Application::GetGraph() {
+    return *graph;
+}
+
 void Grog::Application::parameterChanged(uint32_t index, float value) {
 
 }
@@ -64,6 +72,9 @@ void Grog::Application::OnImguiDisplay() {
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | 
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus);
+
+    for (auto& module : modules)
+        module->DrawWidget();
 
     ImGui::End();
 

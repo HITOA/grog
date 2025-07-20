@@ -35,8 +35,8 @@ dpf_add_plugin(grog-synth
         src/Common/AtomicSharedPtr.cpp
         src/Common/AtomicSharedPtr.hpp
     FILES_DSP
-        src/DSP/GrogPlugin.cpp
-        src/DSP/GrogPlugin.hpp
+        src/DSP/Processor.cpp
+        src/DSP/Processor.hpp
     FILES_UI
         src/UI/Application.cpp
         src/UI/Application.hpp
@@ -67,8 +67,8 @@ dpf_add_plugin(grog-effect
         src/Common/AtomicSharedPtr.cpp
         src/Common/AtomicSharedPtr.hpp
     FILES_DSP
-        src/DSP/GrogPlugin.cpp
-        src/DSP/GrogPlugin.hpp
+        src/DSP/Processor.cpp
+        src/DSP/Processor.hpp
     FILES_UI
         src/UI/Application.cpp
         src/UI/Application.hpp

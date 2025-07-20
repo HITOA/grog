@@ -10,6 +10,8 @@ void Grog::Module::Terminate() {}
 
 void Grog::Module::Draw() {}
 
+void Grog::Module::DrawWidget() {}
+
 Grog::Application* Grog::Module::GetApplication() {
     return app;
 }

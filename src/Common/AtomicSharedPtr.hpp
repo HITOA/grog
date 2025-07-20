@@ -41,6 +41,7 @@ namespace Grog {
             ptr = v.ptr;
             counter = v.counter;
             counter->fetch_add(1);
+            return *this;
         }
         AtomicSharedPtr& operator=(AtomicSharedPtr&& v) {
             uint32_t c = counter->fetch_sub(1);
@@ -49,10 +50,15 @@ namespace Grog {
             ptr = v.ptr;
             counter = v.counter;
             counter->fetch_add(1);
+            return *this;
         }
 
         T* operator->() {
             return ptr;
+        }
+
+        T& operator*() {
+            return *ptr;
         }
         
     private:

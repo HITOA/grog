@@ -9,9 +9,9 @@
 
 namespace Grog {
 
-    class GrogPlugin : public DISTRHO::Plugin {
+    class Processor : public DISTRHO::Plugin {
     public:
-        GrogPlugin();
+        Processor();
 
         AtomicSharedPtr<VCLG::Graph> GetGraph();
         
@@ -42,7 +42,7 @@ namespace Grog {
     private:
         AtomicSharedPtr<VCLG::Graph> graph;
 
-        DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GrogPlugin)
+        DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Processor)
     };
 
 }

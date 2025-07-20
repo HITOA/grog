@@ -8,14 +8,19 @@
 
 void Grog::GraphEditor::Initialize() {
     GetApplication()->GetEventBus().AddListener(this);
+    context = ax::NodeEditor::CreateEditor();
+    ax::NodeEditor::SetCurrentEditor(context);
 }
 
 void Grog::GraphEditor::Terminate() {
+    ax::NodeEditor::SetCurrentEditor(nullptr);
+    ax::NodeEditor::DestroyEditor(context);
     GetApplication()->GetEventBus().RemoveListener(this);
 }
 
-void Grog::GraphEditor::Draw() {
-
+void Grog::GraphEditor::DrawWidget() {
+    ax::NodeEditor::Begin("Editor");
+    ax::NodeEditor::End();
 }
 
 bool Grog::GraphEditor::OnEvent(EventHandle& handle) {

@@ -5,8 +5,11 @@
 #include <UI/Modules/ModalWindowManager.hpp>
 #include <UI/Filesystem.hpp>
 
+#include <VCL/Source.hpp>
+
 #include <iostream>
 #include <fstream>
+#include <format>
 
 #include <curl/curl.h>
 #include <miniz.h>
@@ -31,7 +34,7 @@ public:
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
-            eventBus->Push(std::make_shared<Grog::AsyncResourceManager::LoadResourcesEvent>());
+            eventBus->Push(std::make_shared<Grog::AsyncResourceManager::LoadEvent>());
             ImGui::CloseCurrentPopup();
         }
     }
@@ -65,6 +68,9 @@ void Grog::AsyncResourceManager::Initialize() {
 }
 
 void Grog::AsyncResourceManager::Terminate() {
+    if (runningThread.joinable())
+        runningThread.join();
+
     GetApplication()->GetEventBus().RemoveListener(this);
 }
 
@@ -77,8 +83,8 @@ bool Grog::AsyncResourceManager::OnEvent(EventHandle& handle) {
         runningThread = std::jthread{ &AsyncResourceManager::Update, this, event->resource, event->autoLoadAfterUpdate };
         return true;
     }
-    if (auto event = handle.Get<LoadResourcesEvent>()) {
-        std::cout << "TODO: Load Resources!" << std::endl;
+    if (auto event = handle.Get<LoadEvent>()) {
+        runningThread = std::jthread{ &AsyncResourceManager::Load, this };
         return true;
     }
     return false;
@@ -103,7 +109,7 @@ void Grog::AsyncResourceManager::CheckUpdate(std::string resourceURL, bool autoL
     if (res != CURLE_OK) {
         ShowError("Update Error", "Could not reach distant repository for update.");
         if (autoLoadAfterUpdate)
-            eventBus.Push(std::make_shared<AsyncResourceManager::LoadResourcesEvent>());
+            eventBus.Push(std::make_shared<AsyncResourceManager::LoadEvent>());
         return;
     }
 
@@ -160,7 +166,7 @@ void Grog::AsyncResourceManager::CheckUpdate(std::string resourceURL, bool autoL
             std::make_unique<UpdateResourcesModalWindow>(msg, ss.str(), &eventBus) 
         ));
     } else {
-        eventBus.Push(std::make_shared<AsyncResourceManager::LoadResourcesEvent>());
+        eventBus.Push(std::make_shared<AsyncResourceManager::LoadEvent>());
     }
 }
 
@@ -194,7 +200,7 @@ void Grog::AsyncResourceManager::Update(std::string resource, bool autoLoadAfter
     if (res != CURLE_OK) {
         ShowError("Update Error", "Could not reach distant repository for update\nor the given pack url is wrong.");
         if (autoLoadAfterUpdate)
-            eventBus.Push(std::make_shared<AsyncResourceManager::LoadResourcesEvent>());
+            eventBus.Push(std::make_shared<AsyncResourceManager::LoadEvent>());
         return;
     }
     
@@ -205,7 +211,7 @@ void Grog::AsyncResourceManager::Update(std::string resource, bool autoLoadAfter
     if (!mz_zip_reader_init_mem(&archive, buffer.data(), buffer.size(), 0)) {
         ShowError("Update Error", "Downloaded update is broken.");
         if (autoLoadAfterUpdate)
-            eventBus.Push(std::make_shared<AsyncResourceManager::LoadResourcesEvent>());
+            eventBus.Push(std::make_shared<AsyncResourceManager::LoadEvent>());
         return;
     }
 
@@ -214,7 +220,7 @@ void Grog::AsyncResourceManager::Update(std::string resource, bool autoLoadAfter
     if (fileCount == 0) {
         ShowError("Update Error", "Downloaded update does not contain any file.");
         if (autoLoadAfterUpdate)
-            eventBus.Push(std::make_shared<AsyncResourceManager::LoadResourcesEvent>());
+            eventBus.Push(std::make_shared<AsyncResourceManager::LoadEvent>());
         mz_zip_reader_end(&archive);
         return;
     }
@@ -235,7 +241,7 @@ void Grog::AsyncResourceManager::Update(std::string resource, bool autoLoadAfter
         if (!mz_zip_reader_extract_to_file(&archive, i, decompressedEntryFullpath.c_str(), 0)) {
             ShowError("Update Error", "File could not be extracted.");
             if (autoLoadAfterUpdate)
-                eventBus.Push(std::make_shared<AsyncResourceManager::LoadResourcesEvent>());
+                eventBus.Push(std::make_shared<AsyncResourceManager::LoadEvent>());
             mz_zip_reader_end(&archive);
             return;
         }
@@ -252,7 +258,66 @@ void Grog::AsyncResourceManager::Update(std::string resource, bool autoLoadAfter
     ));
 
     if (autoLoadAfterUpdate)
-        eventBus.Push(std::make_shared<AsyncResourceManager::LoadResourcesEvent>());
+        eventBus.Push(std::make_shared<AsyncResourceManager::LoadEvent>());
+}
+
+void Grog::AsyncResourceManager::Load() {
+    EventBus& eventBus = GetApplication()->GetEventBus();
+    Config& config = GetApplication()->GetConfig();
+
+    std::filesystem::path resourceDirectory{ config.GetResourcesDirectory() };
+    std::filesystem::path userResourceDirectory{ config.GetUserResourcesDirectory() };
+    
+    std::filesystem::path nodesDirectory = resourceDirectory / "Nodes";
+    std::filesystem::path userNodesDirectory = userResourceDirectory / "User Nodes";
+
+    std::shared_ptr<NodeRegistry> nodeRegistry = std::make_shared<NodeRegistry>();
+
+    int loadedNodes = LoadNodesInRegistry(nodesDirectory, nodeRegistry);
+    int loadedUserNodes = LoadNodesInRegistry(userNodesDirectory, nodeRegistry);
+    
+    eventBus.Push(std::make_shared<ResourcesLoadedEvent>(
+        nodeRegistry
+    ));
+    
+    eventBus.Push(std::make_shared<Logger::LogMessageEvent>(
+        Message{ Message::MessageSeverity::Info, std::format("Successfully loaded {} node(s).", loadedNodes) }
+    ));
+    eventBus.Push(std::make_shared<Logger::LogMessageEvent>(
+        Message{ Message::MessageSeverity::Info, std::format("Successfully loaded {} user node(s).", loadedUserNodes) }
+    ));
+}
+
+int Grog::AsyncResourceManager::LoadNodesInRegistry(const std::filesystem::path& nodesDirectory, std::shared_ptr<NodeRegistry> nodeRegistry) {
+    if (!std::filesystem::exists(nodesDirectory))
+        return 0;
+    EventBus& eventBus = GetApplication()->GetEventBus();
+    int loadedNodes = 0;
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(nodesDirectory)) {
+        if (!entry.is_directory() && entry.path().extension() == ".vcl") {
+            std::string relativeNodeName = std::filesystem::relative(entry.path(), nodesDirectory).replace_extension("").string();
+            if (entry.file_size() <= 0) {
+                std::string msg = std::format("Cannot load node `{}` because it does not have any source.", relativeNodeName);
+                eventBus.Push(std::make_shared<Logger::LogMessageEvent>(
+                    Message{ Message::MessageSeverity::Warning, msg }
+                ));
+                continue;
+            }
+            std::filesystem::path fullpath = entry.path();
+            if (auto e = VCL::Source::LoadFromDisk(fullpath); e.has_value()) {
+                std::shared_ptr<VCL::Source> source = *e;
+                nodeRegistry->emplace(relativeNodeName, source);
+                ++loadedNodes;
+            } else {
+                std::string msg = std::format("Cannot load node `{}` because of error:\n{}", relativeNodeName, e.error());
+                eventBus.Push(std::make_shared<Logger::LogMessageEvent>(
+                    Message{ Message::MessageSeverity::Warning, msg }
+                ));
+                continue;
+            }
+        }
+    }
+    return loadedNodes;
 }
 
 void Grog::AsyncResourceManager::ShowError(const std::string& name, const std::string& msg) {

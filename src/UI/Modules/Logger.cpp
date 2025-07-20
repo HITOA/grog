@@ -14,7 +14,16 @@ void Grog::Logger::Terminate() {
 }
 
 bool Grog::Logger::OnEvent(EventHandle& handle) {
+    static const char* n[] = {
+        "NONE",
+        "ERROR",
+        "WARNING",
+        "Info",
+        "Debug"
+    };
+
     if (auto event = handle.Get<LogMessageEvent>()) {
+        std::cout << "[" << n[(int)event->message.severity] << "]: " << event->message.message << std::endl;
         return true;
     }
     return false;

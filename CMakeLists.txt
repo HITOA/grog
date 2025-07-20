@@ -41,6 +41,8 @@ dpf_add_plugin(grog-synth
 
         src/UI/Modules/AsyncResourceManager.hpp
         src/UI/Modules/AsyncResourceManager.cpp
+        src/UI/Modules/GraphEditor.hpp
+        src/UI/Modules/GraphEditor.cpp
         src/UI/Modules/Logger.hpp
         src/UI/Modules/Logger.cpp
         src/UI/Modules/ModalWindowManager.hpp
@@ -71,6 +73,8 @@ dpf_add_plugin(grog-effect
 
         src/UI/Modules/AsyncResourceManager.hpp
         src/UI/Modules/AsyncResourceManager.cpp
+        src/UI/Modules/GraphEditor.hpp
+        src/UI/Modules/GraphEditor.cpp
         src/UI/Modules/Logger.hpp
         src/UI/Modules/Logger.cpp
         src/UI/Modules/ModalWindowManager.hpp

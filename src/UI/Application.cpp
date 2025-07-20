@@ -7,6 +7,7 @@
 
 #include <UI/Filesystem.hpp>
 #include <UI/Modules/AsyncResourceManager.hpp>
+#include <UI/Modules/GraphEditor.hpp>
 #include <UI/Modules/Logger.hpp>
 #include <UI/Modules/ModalWindowManager.hpp>
 
@@ -77,6 +78,7 @@ UI* createUI() {
     ui->Initialize();
     ui->AddModule<Grog::Logger>();
     ui->AddModule<Grog::AsyncResourceManager>();
+    ui->AddModule<Grog::GraphEditor>();
     ui->AddModule<Grog::ModalWindowManager>();
     return ui;
 }

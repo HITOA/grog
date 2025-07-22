@@ -19,10 +19,6 @@ void Grog::GraphEditor::Initialize() {
     
     context = ax::NodeEditor::CreateEditor(&config);
     ax::NodeEditor::SetCurrentEditor(context);
-
-    ax::NodeEditor::Style& style = ax::NodeEditor::GetStyle();
-    style.Colors[ax::NodeEditor::StyleColor_Bg] = ImColor(16, 16, 17, 255);
-    style.Colors[ax::NodeEditor::StyleColor_Grid] = ImColor(36, 36, 37, 255);
 }
 
 void Grog::GraphEditor::Terminate() {

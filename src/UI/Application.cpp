@@ -68,10 +68,14 @@ void Grog::Application::OnImguiDisplay() {
     ImGui::SetNextWindowPos(viewport->WorkPos);
     ImGui::SetNextWindowSize(viewport->WorkSize);
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+
     ImGui::Begin("Grog", nullptr, 
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | 
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus);
+
+    ImGui::PopStyleVar(1);
 
     for (auto& module : modules)
         module->DrawWidget();

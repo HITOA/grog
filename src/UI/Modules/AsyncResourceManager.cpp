@@ -227,6 +227,9 @@ void Grog::AsyncResourceManager::Update(std::string resource, bool autoLoadAfter
 
     std::filesystem::path resourceDirectory{ config.GetResourcesDirectory() };
 
+    std::filesystem::remove_all(resourceDirectory / "Nodes");
+    std::filesystem::remove_all(resourceDirectory / "Presets");
+
     // Will have to fix this code, it work but it's not safe has it doesn't check the path before writing
 
     mz_zip_archive_file_stat fileStat{};

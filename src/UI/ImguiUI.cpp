@@ -18,6 +18,7 @@
 #include <Application.hpp>
 #include <Window.hpp>
 
+#include <iostream>
 
 static const char* GetClipboardTextFn(void* const userData) {
     size_t dataSize;
@@ -224,6 +225,10 @@ bool Grog::ImguiUI::onKeyboard(const KeyboardEvent& event) {
     ImGuiKey key = GetImguiKey(event.key);
     io.AddKeyEvent(key, event.press);
     io.SetKeyEventNativeData(key, event.keycode, event.keycode);
+    io.KeyCtrl = event.mod & kModifierControl;
+    io.KeyShift = event.mod & kModifierShift;
+    io.KeyAlt = event.mod & kModifierAlt;
+    io.KeySuper = event.mod & kModifierSuper;
 
     return io.WantCaptureKeyboard;
 }

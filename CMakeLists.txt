@@ -19,7 +19,8 @@ add_library(imgui STATIC
     3rdParty/imgui/imgui_widgets.cpp
     3rdParty/imgui/imgui.cpp
     3rdParty/imgui/backends/imgui_impl_opengl2.cpp
-    3rdParty/imgui/backends/imgui_impl_opengl3.cpp)
+    3rdParty/imgui/backends/imgui_impl_opengl3.cpp
+    3rdParty/imgui/misc/cpp/imgui_stdlib.cpp)
 target_include_directories(imgui PUBLIC 3rdParty/imgui)
 add_library(grog-imgui ALIAS imgui)
 
@@ -48,6 +49,11 @@ set(grog-ui-src
         src/UI/ImguiUI.hpp
         src/UI/Module.cpp
         src/UI/Module.hpp
+        src/UI/Node.cpp
+        src/UI/Node.hpp
+        src/UI/NodeBuilder.cpp
+        src/UI/NodeBuilder.hpp
+        src/UI/NodeRegistry.hpp
 
         src/UI/Modules/AsyncResourceManager.hpp
         src/UI/Modules/AsyncResourceManager.cpp

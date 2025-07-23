@@ -31,7 +31,7 @@ void Grog::GraphEditor::DrawWidget() {
     VCLG::Graph& graph = GetApplication()->GetGraph();
 
     ax::NodeEditor::Begin("Editor");
-
+    
     if (nodeRegistry) {
         ax::NodeEditor::Suspend();
         if ((ImGui::IsKeyPressed(ImGuiKey_Space) || ImGui::IsMouseClicked(ImGuiMouseButton_Right)) &&

@@ -6,6 +6,7 @@
 #include <DSP/Processor.hpp>
 
 #include <UI/Filesystem.hpp>
+#include <UI/Font.hpp>
 #include <UI/Modules/AsyncResourceManager.hpp>
 #include <UI/Modules/GraphEditor.hpp>
 #include <UI/Modules/Logger.hpp>
@@ -36,6 +37,25 @@ void Grog::Application::Initialize() {
         config.LoadFromDisk(configFilePath);
     
     config.SaveToDisk(configFilePath);
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    ImFontConfig fontConfig{};
+    fontConfig.OversampleH = 2;
+    fontConfig.OversampleV = 2;
+    fontConfig.FontDataOwnedByAtlas = false;
+
+    fontConfig.RasterizerDensity = 1.0f;
+    ImFont* fontA = io.Fonts->AddFontFromMemoryTTF((void*)GROG_DEFAULT_FONT, sizeof(GROG_DEFAULT_FONT), 18.0f, &fontConfig);
+    fontA->Scale = 1.0f;
+
+    fontConfig.RasterizerDensity = 2.0f;
+    ImFont* fontB = io.Fonts->AddFontFromMemoryTTF((void*)GROG_DEFAULT_FONT, sizeof(GROG_DEFAULT_FONT), 18.0f, &fontConfig);
+    fontB->Scale = 2.0f;
+
+    fontConfig.RasterizerDensity = 4.0f;
+    ImFont* fontC = io.Fonts->AddFontFromMemoryTTF((void*)GROG_DEFAULT_FONT, sizeof(GROG_DEFAULT_FONT), 18.0f, &fontConfig);
+    fontC->Scale = 4.0f;
 }
 
 void Grog::Application::AddModule(std::unique_ptr<Module> module) {

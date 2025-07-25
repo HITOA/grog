@@ -34,7 +34,7 @@ void Grog::NodeBuilder::End() {
         float lineWidth = 0.35f;
         drawList->AddLine(
             ImVec2{ outputMin.x - style.NodePadding.x / 2.0f - lineWidth / 2.0f, outputMin.y - style.NodePadding.y / 2.0f },
-            ImVec2{ outputMin.x - style.NodePadding.x / 2.0f - lineWidth / 2.0f, outputMax.y + style.NodePadding.y - style.NodeBorderWidth },
+            ImVec2{ outputMin.x - style.NodePadding.x / 2.0f - lineWidth / 2.0f, outputMax.y + style.NodePadding.y - style.NodeBorderWidth - 0.5f },
             ImColor{ 48, 48, 49, 255 },
             lineWidth
         );

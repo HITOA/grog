@@ -26,8 +26,13 @@ namespace Grog {
         void DrawAddNodePopup();
         void DrawAddNodeMenu(std::string::const_iterator&& begin, std::string::const_iterator&& end, NodeSource& source, const ImVec2& clickPos);
 
-        void InstantiateNode(NodeSource& nodeSource, const ImVec2& position);
+        void InstantiateNode(const std::string& name, NodeSource& nodeSource, const ImVec2& position);
         void DrawNode(VCLG::Graph::NodeHandle handle);
+        void DrawPort(VCLG::Graph::PortHandle portHandle);
+        void DrawPortIcon(float size, ImU32 color, bool filled);
+
+        ax::NodeEditor::NodeId GetAxNodeEditorNodeId(VCLG::Graph::NodeHandle nodeHandle);
+        ax::NodeEditor::PinId GetAxNodeEditorPinId(VCLG::Graph::PortHandle portHandle);
 
     private:
         ax::NodeEditor::EditorContext* context = nullptr;

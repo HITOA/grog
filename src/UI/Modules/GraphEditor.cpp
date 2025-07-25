@@ -88,19 +88,88 @@ void Grog::GraphEditor::DrawAddNodeMenu(std::string::const_iterator&& begin, std
     }
     std::string name{ begin, end };
     if (ImGui::MenuItem(name.c_str())) {
-        InstantiateNode(source, clickPos);
+        InstantiateNode(name, source, clickPos);
     }
 }
 
-void Grog::GraphEditor::InstantiateNode(NodeSource& nodeSource, const ImVec2& position) {
+void Grog::GraphEditor::InstantiateNode(const std::string& name, NodeSource& nodeSource, const ImVec2& position) {
     std::unique_ptr<Node> node = std::make_unique<Node>(nodeSource.source, nullptr);
+    node->SetName(name);
     VCLG::Graph::NodeHandle handle = GetApplication()->GetGraph().AddNode(std::move(node));
-    ax::NodeEditor::SetNodePosition(handle.GetNodeIdx() + 1, ax::NodeEditor::ScreenToCanvas(position));
+    ax::NodeEditor::SetNodePosition(GetAxNodeEditorNodeId(handle), ax::NodeEditor::ScreenToCanvas(position));
 }
 
 void Grog::GraphEditor::DrawNode(VCLG::Graph::NodeHandle handle) {
-    NodeBuilder builder{ handle.GetNodeIdx() + 1 };
+    Node* node = (Node*)handle.Get();
+    NodeBuilder builder{ GetAxNodeEditorNodeId(handle) };
     builder.Begin();
-    ImGui::TextUnformatted("UWU");
+
+    builder.BeginHeader();
+    ImGui::TextUnformatted(node->GetName().c_str());
+    builder.EndHeader();
+
+    builder.BeginContent();
+
+    builder.BeginInput();
+    for (uint32_t i = 0; i < node->GetInputs().size(); ++i)
+        DrawPort(handle.GetInput(i));
+    builder.EndInput();
+
+    builder.BeginOutput();
+    for (uint32_t i = 0; i < node->GetOutputs().size(); ++i)
+        DrawPort(handle.GetOutput(i));
+    builder.EndOutput();
+
+    builder.EndContent();
+
     builder.End();
+}
+
+void Grog::GraphEditor::DrawPort(VCLG::Graph::PortHandle portHandle) {
+    ax::NodeEditor::BeginPin(
+        GetAxNodeEditorPinId(portHandle),
+        portHandle.IsPortInput() ? ax::NodeEditor::PinKind::Input : ax::NodeEditor::PinKind::Output
+    );
+
+    if (portHandle.IsPortInput()) {
+        DrawPortIcon(4.0f, ImColor{ 204, 65, 65, 255 }, false);
+        ImGui::SameLine();
+    }
+
+    ImGui::TextUnformatted(portHandle->GetName().c_str());
+
+    if (!portHandle.IsPortInput()) {
+        ImGui::SameLine();
+        DrawPortIcon(4.0f, ImColor{ 204, 65, 65, 255 }, false);
+    }
+
+    ax::NodeEditor::EndPin();
+}
+
+void Grog::GraphEditor::DrawPortIcon(float size, ImU32 color, bool filled) {
+    ImGui::Dummy(ImVec2{ 10.0f, 20.0f });
+    if (ImGui::IsRectVisible(ImVec2{ size, size })) {
+        ImDrawList *drawList = ImGui::GetWindowDrawList();
+        
+        ImVec2 rectMin = ImGui::GetItemRectMin();
+        ImVec2 rectSize = ImGui::GetItemRectSize();
+
+        ImVec2 c = ImVec2{ rectMin.x + rectSize.x / 2.0f, rectMin.y + rectSize.y / 2.0f };
+
+        if (filled)
+            drawList->AddCircleFilled(c, size, color);
+        else
+            drawList->AddCircle(c, size, color);
+    }
+}
+
+ax::NodeEditor::NodeId Grog::GraphEditor::GetAxNodeEditorNodeId(VCLG::Graph::NodeHandle nodeHandle) {
+    return nodeHandle.GetNodeIdx() + 1;
+}
+
+ax::NodeEditor::PinId Grog::GraphEditor::GetAxNodeEditorPinId(VCLG::Graph::PortHandle portHandle) {
+    const uint32_t maxNodeCountPerGraph = 16384;
+    const uint32_t maxPortCountPerNode = 128;
+    uint32_t offset = portHandle.GetNodeHandle().GetNodeIdx() * maxPortCountPerNode;
+    return (portHandle.GetPortIdx() + offset + (portHandle.IsPortInput() ? 0 : maxPortCountPerNode / 2)) + maxNodeCountPerGraph + 1;
 }
